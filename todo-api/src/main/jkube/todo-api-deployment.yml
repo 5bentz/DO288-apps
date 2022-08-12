@@ -1,0 +1,14 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-api
+spec:
+  selector:
+  template:
+    spec:
+      containers:
+      - name: quarkus
+        envFrom:
+        - configMapRef:
+            name: todo-api
