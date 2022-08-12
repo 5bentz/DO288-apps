@@ -8,11 +8,12 @@ ENV REACT_APP_API_HOST=""
 
 USER 0
 
-COPY . /tmp/todo-frontend
+WORKDIR /tmp/todo-frontend
+COPY . ./
 
-RUN cd /tmp/todo-frontend
-RUN npm install
-RUN npm run build
+RUN npm install && \
+    npm run build
+
 
 # https://github.com/sclorg/nginx-container
 FROM registry.access.redhat.com/ubi8/nginx-118
@@ -24,5 +25,13 @@ LABEL updatedDate="2021-05-19"
 
 COPY nginx.conf /etc/nginx/
 COPY --from=appbuild /tmp/todo-frontend/build /usr/share/nginx/html
+
+#RUN chgrp -R 0 /etc/nginx /usr/share/nginx/html && \
+#    chmod g=u /etc/nginx /usr/share/nginx/html
+#
+#USER 1001
+
+USER nginx
+EXPOSE 8080
 
 CMD nginx -g "daemon off;"
